@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 3.18)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # You must set ASM, otherwise CMAKE_ASM_COMPILE_OBJECT will not work on MSVC
 project(counterstrikesharp C CXX ASM)
+
+
+# set(CMAKE_CXX_STANDARD 20)            # 设置C++标准版本（11、14、17、20、23）
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)   # 如果没有这个，可能会退回到旧标准
+# set(CMAKE_CXX_EXTENSIONS OFF)         # 禁用 gnu++，启用纯标准 c++
+
+add_compile_options(-Wno-register)
 
 include("makefiles/shared.cmake")
 
@@ -103,6 +110,8 @@ set(SOURCE_FILES
     src/core/UserMessage.h
     src/core/UserMessage.cpp
     src/core/recipientfilters.h
+    src/plugin/plugin.h
+    src/plugin/zm_rpg/zm_rpg.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${NATIVES_SOURCES} ${CONVERSIONS_SOURCES} ${CONVERSIONS_HEADERS})
@@ -136,3 +145,28 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/configs ${CMAKE_BINARY_DIR}
 )
+
+set(CS2_ROOT_PATH "/home/jiang/.steam/SteamApps/common/Counter-Strike Global Offensive")
+# 定义目标目录
+set(CS2_PLUGIN_PATH  "${CS2_ROOT_PATH}/game/csgo/addons/counterstrikesharp/bin/linuxsteamrt64")
+
+# 添加构建后自动拷贝的命令
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CS2_PLUGIN_PATH}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<TARGET_FILE:${PROJECT_NAME}>"
+            "${CS2_PLUGIN_PATH}/"
+    COMMENT "Copying plugin .so to CS:GO addons directory"
+)
+
+set(CS2_EXE_PATH "/home/jiang/.steam/SteamApps/common/Counter-Strike Global Offensive/game/bin/linuxsteamrt64/cs2")
+set(CS2_ARGS -dedicated +map de_dust2)
+
+# 自定义构建目标：编译 → 拷贝 → 启动 cs2
+add_custom_target(run_cs2_debug
+    COMMAND ${CS2_EXE_PATH} ${CS2_ARGS}
+    COMMENT "Launching CS2 for debugging..."
+    DEPENDS ${PROJECT_NAME}
+    USES_TERMINAL
+)
+

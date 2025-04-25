@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug CS2 via CMake",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/jiang/.steam/SteamApps/common/Counter-Strike Global Offensive/game/bin/linuxsteamrt64/cs2",
+            "args": [
+                "-dedicated",
+                "+map",
+                "de_dust2"
+            ],
+            "stopAtEntry": false,
+            "cwd": "/home/jiang/.steam/SteamApps/common/Counter-Strike Global Offensive/game",
+            "environment": [],
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "text": "handle SIGSEGV stop print pass"
+                },
+                {
+                    "text": "set pagination off"
+                }
+            ],
+            "preLaunchTask": "Build and Copy Plugin",
+            "sourceFileMap": {
+                "/home": "/home" // 如果源码在 WSL，不需要改
+            }
+        }
+    ]
+}

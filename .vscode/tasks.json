@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Copy Plugin",
+            "type": "shell",
+            "command": "cmake --build build && cp build/addons/counterstrikesharp/bin/linuxsteamrt64/*.so /home/jiang/.steam/SteamApps/common/Counter-Strike\\ Global\\ Offensive/game/csgo/addons/counterstrikesharp/bin/linuxsteamrt64/",
+            "problemMatcher": []
+        }
+    ]
+}

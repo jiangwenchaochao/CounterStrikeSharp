@@ -29,6 +29,7 @@
 #include "igameeventsystem.h"
 #include "interfaces/cs2_interfaces.h"
 #include "iserver.h"
+#include "plugin/plugin.h"
 #include "scripting/callback_manager.h"
 #include "scripting/dotnet_host.h"
 #include "scripting/script_engine.h"
@@ -36,6 +37,8 @@
 
 #define VERSION_STRING  "v" SEMVER " @ " GITHUB_SHA
 #define BUILD_TIMESTAMP __DATE__ " " __TIME__
+
+counterstrikesharp::plugin::plugin* plugin_ = nullptr;
 
 counterstrikesharp::GlobalClass* counterstrikesharp::GlobalClass::head = nullptr;
 
@@ -90,6 +93,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
 
     Log::Init();
 
+
+
     CSSHARP_CORE_INFO("Initializing");
 
     GET_V_IFACE_CURRENT(GetEngineFactory, globals::engineServer2, IVEngineServer2, SOURCE2ENGINETOSERVER_INTERFACE_VERSION);
@@ -136,6 +141,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
     on_activate_callback = globals::callbackManager.CreateCallback("OnMapStart");
     on_metamod_all_plugins_loaded_callback = globals::callbackManager.CreateCallback("OnMetamodAllPluginsLoaded");
 
+
+
     SH_ADD_HOOK_MEMFUNC(IServerGameDLL, GameFrame, globals::server, this, &CounterStrikeSharpMMPlugin::Hook_GameFrame, true);
     SH_ADD_HOOK_MEMFUNC(INetworkServerService, StartupServer, globals::networkServerService, this,
                         &CounterStrikeSharpMMPlugin::Hook_StartupServer, true);
@@ -162,6 +169,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
     g_pCVar = globals::cvars;
     ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
+    plugin_ = new counterstrikesharp::plugin::plugin();
+    plugin_->Load(true);
     return true;
 }
 
