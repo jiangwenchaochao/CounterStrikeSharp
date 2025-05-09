@@ -38,8 +38,6 @@
 #define VERSION_STRING  "v" SEMVER " @ " GITHUB_SHA
 #define BUILD_TIMESTAMP __DATE__ " " __TIME__
 
-counterstrikesharp::plugin::plugin* plugin_ = nullptr;
-
 counterstrikesharp::GlobalClass* counterstrikesharp::GlobalClass::head = nullptr;
 
 CGameEntitySystem* GameEntitySystem() { return counterstrikesharp::globals::entitySystem; }
@@ -169,8 +167,8 @@ bool CounterStrikeSharpMMPlugin::Load(PluginId id, ISmmAPI* ismm, char* error, s
     g_pCVar = globals::cvars;
     ConVar_Register(FCVAR_RELEASE | FCVAR_CLIENT_CAN_EXECUTE | FCVAR_GAMEDLL);
 
-    plugin_ = new counterstrikesharp::plugin::plugin();
-    plugin_->Load(true);
+    plugin::PluginsLoad(late);
+    plugin::PluginsRegisterEvent();
     return true;
 }
 

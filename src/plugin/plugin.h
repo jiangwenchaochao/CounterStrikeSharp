@@ -1,18 +1,25 @@
-namespace counterstrikesharp::plugin {
-// class plugin
-// {
-//   public:
-//     virtual void Load(bool hot_reload) = 0;
-//     virtual void OnAllPluginsLoaded(bool hotReload) = 0;
-//     virtual void Unload(bool hotReload) = 0;
-// };
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
-class plugin
-{
+#include <vector>
+#include "core/log.h"
+#include "scripting/callback_manager.h"
+namespace counterstrikesharp::plugin {
+
+  class Plugin{
   public:
-    void Load(bool hot_reload);
-    void OnAllPluginsLoaded(bool hotReload);
-    void Unload(bool hotReload);
-};
+    Plugin();
+    virtual void Load(bool hot_reload) = 0;
+    virtual void Unload(bool hotReload) = 0;
+    virtual ~Plugin();
+    static std::vector<Plugin*>& plugins();
+  public:
+    virtual void onMapStart(char * str);
+  };
+
+  void PluginsLoad(bool hot_reload);
+  void PluginsRegisterEvent();
+  void PluginsUnload();
 
 } // namespace counterstrikesharp::plugin
+#endif  // PLUGIN_H

@@ -111,6 +111,7 @@ set(SOURCE_FILES
     src/core/UserMessage.cpp
     src/core/recipientfilters.h
     src/plugin/plugin.h
+    src/plugin/plugin.cpp
     src/plugin/zm_rpg/zm_rpg.cpp
 )
 

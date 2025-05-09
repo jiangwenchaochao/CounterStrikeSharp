@@ -6,18 +6,24 @@
 
 namespace counterstrikesharp::plugin { 
 
-void plugin::Load(bool hot_reload)
-{
-    auto mapstart = [](counterstrikesharp::fxNativeContext* ctx) {
-        // 读取参数
-        char* str  = reinterpret_cast<char *>(ctx->arguments[0]);
-        CSSHARP_CORE_INFO(str);
-        // ctx->result = *reinterpret_cast<uint64_t*>(&result);
-    };
-    globals::callbackManager.TryAddFunction("OnMapStart", mapstart);
-}
+#define REGISTER_PLUGIN(CLASS_NAME) \
+    static CLASS_NAME global_##CLASS_NAME;
 
-void plugin::OnAllPluginsLoaded(bool hotReload) {};
-void plugin::Unload(bool hotReload) {};
+    class Zm_rpg :public Plugin{
+    public:
+        void Load(bool hot_reload) override{
+            CSSHARP_CORE_INFO("Zm_rpg load");
+        };
+        void Unload(bool hotReload) override {
+            CSSHARP_CORE_INFO("Zm_rpg Unload");
+        };
+
+    public:
+        void onMapStart(char * str) override {
+            CSSHARP_CORE_INFO("Zm_rpg onMapStart {}" ,str);
+        }
+
+    };
+    REGISTER_PLUGIN(Zm_rpg);
 
 } // namespace counterstrikesharp::plugin
